@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe Game</title>
+<style>
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    margin: 20px auto;
+  }
+
+  .square {
+    width: 100px;
+    height: 100px;
+    font-size: 36px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border: 1px solid #ccc;
+  }
+</style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div class="board" id="board"></div>
+  <script>
+    let currentPlayer = 'X';
+    let board = ['', '', '', '', '', '', '', '', ''];
+
+    function checkWinner() {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6] // Diagonals
+      ];
+
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return board[a];
+        }
+      }
+
+      if (board.includes('')) {
+        return null; // Game still in progress
+      } else {
+        return 'draw'; // It's a draw
+      }
+    }
+
+    function handleClick(index) {
+      if (board[index] || checkWinner()) {
+        return;
+      }
+
+      board[index] = currentPlayer;
+      document.getElementById(`square${index}`).textContent = currentPlayer;
+      
+      const winner = checkWinner();
+      if (winner) {
+        if (winner === 'draw') {
+          alert("It's a draw!");
+        } else {
+          alert(`Player ${winner} wins!`);
+        }
+        resetBoard();
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+
+    function resetBoard() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      document.getElementById('board').innerHTML = '';
+      createBoard();
+    }
+
+    function createBoard() {
+      for (let i = 0; i < 9; i++) {
+        const square = document.createElement('div');
+        square.classList.add('square');
+        square.id = `square${i}`;
+        square.addEventListener('click', () => handleClick(i));
+        document.getElementById('board').appendChild(square);
+      }
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
